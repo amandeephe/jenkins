@@ -42,25 +42,7 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: dockerHubCredentials, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "docker push ${dockerImageTag}"
-                    }
-                }
-            }
-        }
-
-        stage('Trigger ManifestUpdate') {
-            steps {
-                echo "Triggering updatemanifestjob"
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
-                }
-            }
-        }
     }
-}
+    } 
+    
+
